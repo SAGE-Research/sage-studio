@@ -8,18 +8,18 @@ SAGE Studio is part of the SAGE ecosystem. For development:
 
 1. **Clone the repository**:
 ```bash
-git clone https://github.com/intellistream/sage-studio.git
+git clone https://github.com/SAGE-Research/sage-studio.git
 cd sage-studio
 ```
 
 2. **Install dependencies**:
 ```bash
-pip install -e ".[dev,full]"
+python -m pip install -e ".[dev,full]"
 ```
 
 3. **Install SAGE core dependencies** (if needed):
 ```bash
-pip install isage-common isagellm
+python -m pip install isage-common isagellm
 ```
 
 ## Architecture
@@ -27,9 +27,9 @@ pip install isage-common isagellm
 SAGE Studio is built on top of SAGE's inference framework and follows the SAGE architecture:
 
 - **Frontend**: React + TypeScript + Vite
-- **Backend**: FastAPI (integrated with sage-llm-gateway)
-- **Backend**: FastAPI (Studio backend + Gateway integration)
-- **Integration**: Uses SAGE Control Plane for LLM orchestration
+- **Backend**: FastAPI application in `sage.studio.api.app`
+- **Services**: visual flow registry, construction, persistence, and execution
+- **Integration**: SAGE and SageLLM are consumed through their public package APIs
 
 ## Docs Consistency Checklist
 
@@ -78,9 +78,9 @@ We follow Conventional Commits:
 
 ## Community
 
-- Main SAGE Repository: https://github.com/intellistream/SAGE
+- SAGE Research organization: https://github.com/SAGE-Research
 - Documentation: https://intellistream.github.io/sage-docs/
-- Issues: https://github.com/intellistream/sage-studio/issues
+- Issues: https://github.com/SAGE-Research/sage-studio/issues
 
 ## License
 
