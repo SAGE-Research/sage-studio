@@ -17,6 +17,9 @@ on:
     paths:
       - 'src/**'
       - 'tests/**'
+      - 'docs/**'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
       - 'pyproject.toml'
       - '.github/workflows/ci-test.yml'
 
@@ -27,6 +30,9 @@ on:
     paths:
       - 'src/**'
       - 'tests/**'
+      - 'docs/**'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
       - 'pyproject.toml'
       - '.github/workflows/ci-test.yml'
 
