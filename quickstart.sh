@@ -9,9 +9,9 @@
 #   ./quickstart.sh --doctor      # diagnose environment issues
 #
 # Install matrix:
-#   (default / --dev)  pip install -e .[dev,full]
-#   --full             pip install -e .[full]
-#   --standard         pip install -e .
+#   (default / --dev)  python -m pip install -e .[dev,full]
+#   --full             python -m pip install -e .[full]
+#   --standard         python -m pip install -e .
 #
 # Rules:
 #   - NEVER creates a new venv. Must be called in an existing non-venv environment.
@@ -44,6 +44,15 @@ done
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$SCRIPT_DIR"
+PYTHON_BIN="${PYTHON_BIN:-python}"
+
+if ! command -v "$PYTHON_BIN" >/dev/null 2>&1; then
+    echo -e "${RED}  ❌ Python interpreter not found: $PYTHON_BIN${NC}"
+    echo -e "${YELLOW}  → Activate the intended environment or set PYTHON_BIN explicitly.${NC}"
+    exit 1
+fi
+
+PYTHON_EXECUTABLE="$("$PYTHON_BIN" -c 'import sys; print(sys.executable)')"
 
 echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo -e "${BOLD}${BLUE}  sage-studio — Quick Start${NC}"
@@ -54,7 +63,9 @@ echo ""
 if [ "$DOCTOR" = true ]; then
     echo -e "${BOLD}${BLUE}Environment Diagnosis${NC}"
     echo ""
-    echo -e "${YELLOW}Python:${NC} $(python3 --version 2>/dev/null || echo 'NOT FOUND')"
+    echo -e "${YELLOW}Python:${NC} $("$PYTHON_BIN" --version 2>/dev/null || echo 'NOT FOUND')"
+    echo -e "${YELLOW}sys.executable:${NC} ${PYTHON_EXECUTABLE}"
+    echo -e "${YELLOW}pip:${NC} $("$PYTHON_BIN" -m pip --version 2>/dev/null || echo 'NOT FOUND')"
     echo -e "${YELLOW}Conda env:${NC} ${CONDA_DEFAULT_ENV:-none}"
     echo -e "${YELLOW}Venv:${NC} ${VIRTUAL_ENV:-none}"
     echo -e "${YELLOW}ruff:${NC} $(ruff --version 2>/dev/null || echo 'NOT FOUND')"
@@ -81,8 +92,9 @@ fi
 
 # ─── Step 1/3: Python version check ──────────────────────────────────────────────
 echo -e "${YELLOW}${BOLD}Step 1/3: Checking Python environment${NC}"
-PYTHON_VERSION=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null || echo "unknown")
+PYTHON_VERSION=$("$PYTHON_BIN" -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null || echo "unknown")
 echo -e "  Python version: ${CYAN}${PYTHON_VERSION}${NC}"
+echo -e "  Python executable: ${CYAN}${PYTHON_EXECUTABLE}${NC}"
 # DEPRECATED: Python 3.10 support
 # if python3 -c "import sys; exit(0 if sys.version_info >= (3,10) else 1)" 2>/dev/null; then
 #     echo -e "  ${GREEN}✓ Python ≥ 3.10${NC}"
@@ -92,7 +104,7 @@ echo -e "  Python version: ${CYAN}${PYTHON_VERSION}${NC}"
 # fi
 
 # ACTIVE: Python 3.11+ required
-if python3 -c "import sys; exit(0 if sys.version_info >= (3,11) else 1)" 2>/dev/null; then
+if "$PYTHON_BIN" -c "import sys; exit(0 if sys.version_info >= (3,11) else 1)" 2>/dev/null; then
     echo -e "  ${GREEN}✓ Python ≥ 3.11${NC}"
 else
     echo -e "  ${RED}✗ Python 3.11+ required (found ${PYTHON_VERSION})${NC}"
@@ -121,11 +133,11 @@ echo ""
 # ─── Step 3/3: Install package ────────────────────────────────────────────────────
 echo -e "${YELLOW}${BOLD}Step 3/3: Installing package (editable)${NC}"
 if [ -n "$EXTRAS" ]; then
-    echo -e "  ${CYAN}pip install -e .$EXTRAS${NC}"
-    pip install -e ".$EXTRAS"
+    echo -e "  ${CYAN}${PYTHON_EXECUTABLE} -m pip install -e .$EXTRAS${NC}"
+    "$PYTHON_BIN" -m pip install -e ".$EXTRAS"
 else
-    echo -e "  ${CYAN}pip install -e .${NC}  (standard — no extras)"
-    pip install -e .
+    echo -e "  ${CYAN}${PYTHON_EXECUTABLE} -m pip install -e .${NC}  (standard — no extras)"
+    "$PYTHON_BIN" -m pip install -e .
 fi
 echo -e "${GREEN}✓ Package installed in editable mode${EXTRAS:+ with extras: $EXTRAS}${NC}"
 echo ""
